@@ -1,12 +1,15 @@
 const { Telegraf } = require("telegraf");
+const express = require("express");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-// bot.start((ctx) => ctx.reply("Welcome"));
-// bot.help((ctx) => ctx.reply("Send me a sticker"));
-// bot.on("sticker", (ctx) => ctx.reply("👍"));
 bot.hears("Ало", (ctx) => ctx.reply("Салут"));
-bot.launch();
 
-// Enable graceful stop
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+const secretPath = `/telegraf/${bot.secretPathComponent()}`;
+
+bot.telegram.setWebhook(`${process.env.URL}${secretPath}`);
+
+const app = express();
+app.get("/", (req, res) => res.send("Hello World!"));
+app.listen(8080, () => {
+  console.log("Example app listening on port 8080!");
+});
